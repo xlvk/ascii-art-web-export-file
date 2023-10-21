@@ -103,6 +103,11 @@ func processor(w http.ResponseWriter, r *http.Request) {
 	fileScanner.Split(bufio.ScanLines)
 
 	for fileScanner.Scan() {
+		if !IsValid(fileScanner.Text()) {
+			w.WriteHeader(http.StatusInternalServerError)
+			http.ServeFile(w, r, "template/500Error.html")
+			return
+		}
 		arr = append(arr, fileScanner.Text())
 	}
 
